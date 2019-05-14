@@ -19,6 +19,7 @@ public class Client {
             socket.connect(new InetSocketAddress(Inet4Address.getLocalHost(), 2000), 3000);
 
             System.out.println("以发起服务器连接");
+            //客户端这个端口为 动态端口，不能被正式注册使用
             System.out.println("客户端信息 :" + socket.getLocalAddress() + " port : " + socket.getLocalPort());
             System.out.println("服务端信息 :" + socket.getInetAddress() + " port : " + socket.getPort());
 
