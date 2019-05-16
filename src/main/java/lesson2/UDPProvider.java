@@ -42,6 +42,7 @@ public class UDPProvider {
 
             byte[] responseDataBytes = responseData.getBytes();
 
+            //从接收到的信息里可以获取到发送者的地址和端口，所以在回送的时候就可以直接使用
             DatagramPacket responsePacket = new DatagramPacket(responseDataBytes , responseDataBytes.length ,
                     receivePacket.getAddress() , receivePacket.getPort());
 
