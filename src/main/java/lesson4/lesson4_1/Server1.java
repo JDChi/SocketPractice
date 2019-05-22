@@ -1,7 +1,12 @@
 package lesson4.lesson4_1;
 
+import util.Tools;
+
+import javax.tools.Tool;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
+import java.nio.ByteBuffer;
 
 /**
  * @Created by jdchi
@@ -74,27 +79,84 @@ public class Server1 {
             super.run();
             System.out.println("新客户端连接 " + socket.getInetAddress() + " port : " + socket.getPort());
 
+//            try {
+//                //得到打印流，用于数据输出，服务器回送数据使用
+//                PrintStream socketOutput = new PrintStream(socket.getOutputStream());
+//                //得到输入流，用于接收数据
+//                BufferedReader socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//
+//                do{
+//                    //客户端拿到一条数据
+//                    String str = socketInput.readLine();
+//
+//                    if("bye".equalsIgnoreCase(str)){
+//                        flag = false;
+//                        socketOutput.println("bye");
+//                    }else {
+//                        System.out.println(str);
+//                        socketOutput.println("回送：" + str.length());
+//                    }
+//                }while (flag);
+//
+//                socketInput.close();
+//                socketOutput.close();
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                System.out.println("连接异常断开");
+//            }finally {
+//                try {
+//                    socket.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
             try {
-                //得到打印流，用于数据输出，服务器回送数据使用
-                PrintStream socketOutput = new PrintStream(socket.getOutputStream());
-                //得到输入流，用于接收数据
-                BufferedReader socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                OutputStream outputStream = socket.getOutputStream();
+                InputStream inputStream = socket.getInputStream();
 
-                do{
-                    //客户端拿到一条数据
-                    String str = socketInput.readLine();
+                byte[] buffer = new byte[256];
 
-                    if("bye".equalsIgnoreCase(str)){
-                        flag = false;
-                        socketOutput.println("bye");
-                    }else {
-                        System.out.println(str);
-                        socketOutput.println("回送：" + str.length());
-                    }
-                }while (flag);
+                int readCount = inputStream.read(buffer);
 
-                socketInput.close();
-                socketOutput.close();
+                ByteBuffer byteBuffer = ByteBuffer.wrap(buffer , 0 , readCount);
+
+                byte be = byteBuffer.get();
+
+                char c = byteBuffer.getChar();
+
+                int i = byteBuffer.getInt();
+
+                boolean b = byteBuffer.get() == 1;
+
+                long l = byteBuffer.getLong();
+
+                float f = byteBuffer.getFloat();
+
+                double d = byteBuffer.getDouble();
+
+                int pos = byteBuffer.position();
+
+                String str = new String(buffer , pos , readCount - pos - 1);
+
+                System.out.println("收到数量：" + readCount + "数据："
+                + be + "\n" + c + "\n" + i + "\n" + b + "\n" + l + "\n" + f + "\n" + d + "\n" + str + "\n");
+
+                if (readCount > 0) {
+
+//                    int value = Tools.byteArrayToInt(buffer);
+//                    System.out.println("收到数量：" + readCount + " 数据：" + value);
+
+                    outputStream.write(buffer , 0 , readCount);
+                }else {
+                    System.out.println("没有收到 " + readCount);
+                    outputStream.write(new byte[]{0});
+                }
+
+                outputStream.close();
+                inputStream.close();
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -106,6 +168,7 @@ public class Server1 {
                     e.printStackTrace();
                 }
             }
+
 
             System.out.println("客户端已关闭" + socket.getInetAddress() + " port : " + socket.getPort());
         }

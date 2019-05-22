@@ -1,7 +1,10 @@
 package lesson4.lesson4_1;
 
+import util.Tools;
+
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
 
 /**
  * @Created by jdchi
@@ -42,36 +45,80 @@ public class Client1 {
 
     private static void todo(Socket client) throws IOException {
         //构建键盘输入流
-        InputStream keyboardInput = System.in;
-        BufferedReader keyboardInputReader = new BufferedReader(new InputStreamReader(keyboardInput));
+//        InputStream keyboardInput = System.in;
+//        BufferedReader keyboardInputReader = new BufferedReader(new InputStreamReader(keyboardInput));
+//
+//        //得到 Socket 输出流，并转换为打印流
+//        OutputStream outputStream = client.getOutputStream();
+//        PrintStream printStream = new PrintStream(outputStream);
+//
+//        //得到 socket输入流，并转换为 bufferedreader
+//        InputStream inputStream = client.getInputStream();
+//        BufferedReader socketBufferReader = new BufferedReader(new InputStreamReader(inputStream));
+//        boolean flag = true;
+//        do {
+//
+//
+//            //键盘读取一行
+//            String str = keyboardInputReader.readLine();
+//            //发送到服务器
+//            printStream.println(str);
+//
+//            //从服务器读取一行
+//            String echo = socketBufferReader.readLine();
+//            if ("bye".equalsIgnoreCase(echo)) {
+//                flag = false;
+//            } else {
+//                System.out.println(echo);
+//            }
+//        } while (flag);
+//
+//        printStream.close();
+//        socketBufferReader.close();
 
-        //得到 Socket 输出流，并转换为打印流
         OutputStream outputStream = client.getOutputStream();
-        PrintStream printStream = new PrintStream(outputStream);
-
-        //得到 socket输入流，并转换为 bufferedreader
         InputStream inputStream = client.getInputStream();
-        BufferedReader socketBufferReader = new BufferedReader(new InputStreamReader(inputStream));
-        boolean flag = true;
-        do {
+
+        byte[] buffer = new byte[256];
 
 
-            //键盘读取一行
-            String str = keyboardInputReader.readLine();
-            //发送到服务器
-            printStream.println(str);
+        ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);
 
-            //从服务器读取一行
-            String echo = socketBufferReader.readLine();
-            if ("bye".equalsIgnoreCase(echo)) {
-                flag = false;
-            } else {
-                System.out.println(echo);
-            }
-        } while (flag);
+        byteBuffer.put((byte) 126);
 
-        printStream.close();
-        socketBufferReader.close();
+        char c = 'a';
+        byteBuffer.putChar(c);
+
+        int i = 2323123;
+        byteBuffer.putInt(i);
+
+        boolean b = true;
+        byteBuffer.put(b?(byte)1:(byte)0);
+
+        long l = 1338848389;
+        byteBuffer.putLong(l);
+
+        float f = 1.34245f;
+        byteBuffer.putFloat(f);
+
+        double d = 1.34442222232352d;
+        byteBuffer.putDouble(d);
+
+        String s = "hello你好";
+        byteBuffer.put(s.getBytes());
+
+
+        outputStream.write(buffer , 0 , byteBuffer.position() + 1);
+
+        int read = inputStream.read(buffer);
+        if (read > 0) {
+            System.out.println("收到数量：" + read + "数量：" + new String(buffer , 0 , read));
+        }else {
+            System.out.println("没有收到：" + read);
+        }
+
+        inputStream.close();
+        outputStream.close();
 
     }
 
