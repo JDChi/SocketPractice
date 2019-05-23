@@ -75,10 +75,11 @@ public class UDPProvider {
                     }
 
                     int index = UDPConstants.HEADER.length;
-                    short cmd = (short)((clientData[index++] << 8) | (clientData[index++] & 0xff));
-                    int responsePort = clientData[index++] << 24 | (clientData[index++] & 0xff) << 16|
-                            clientData[index++] & 0xff << 8 | clientData[index++] & 0xff;
-
+                    short cmd = (short) ((clientData[index++] << 8) | (clientData[index++] & 0xff));
+                    int responsePort = (((clientData[index++]) << 24) |
+                            ((clientData[index++] & 0xff) << 16) |
+                            ((clientData[index++] & 0xff) << 8) |
+                            ((clientData[index] & 0xff)));
 
                     if (cmd == 1 && responsePort > 0) {
 

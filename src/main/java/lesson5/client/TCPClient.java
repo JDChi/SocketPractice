@@ -49,10 +49,13 @@ public class TCPClient {
 
         do{
             String str = input.readLine();
-            if("bye".equalsIgnoreCase(str)){
+            printStream.println(str);
+
+            String echo = socketBufferReader.readLine();
+            if("bye".equalsIgnoreCase(echo)){
                 flag = false;
             }else {
-                System.out.println(str);
+                System.out.println(echo);
             }
         }while (flag);
 

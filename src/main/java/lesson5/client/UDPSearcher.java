@@ -30,7 +30,7 @@ public class UDPSearcher {
 
         Listener listener = listen(receiveLatch);
         sendBroadcast();
-        receiveLatch.await(timeout , TimeUnit.SECONDS);
+        receiveLatch.await(timeout , TimeUnit.MILLISECONDS);
 
         System.out.println("UDPSearcher Finished");
 
